@@ -1,6 +1,7 @@
 export interface MovieShort {
     id: number;
     name: string;
+    alternativeName: string;
     year: number;
     poster?: { url: string };
     rating?: { kp: number };

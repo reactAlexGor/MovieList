@@ -15,7 +15,7 @@ export class MoviesStore {
         makeAutoObservable(this);
     }
 
-    /** сброс и загрузка первой страницы */
+    // Сброс и загрузка первой страницы
     async fetchFirstPage(filters: MovieFilters = {}) {
         this.filters = filters;
         this.page = 1;
@@ -23,12 +23,13 @@ export class MoviesStore {
         await this.fetchPage(1);
     }
 
-    /** подгрузка следующей страницы (для бесконечного скролла) */
+    // Подгрузка следующей страницы (для бесконечного скролла)
     async fetchNextPage() {
-        if (this.page >= this.pages) return;
+        if (this.isLoading || this.page >= this.pages) return;
         await this.fetchPage(this.page + 1);
     }
 
+    // Загрузка страницы
     async fetchPage(page: number) {
         this.isLoading = true;
         this.error = null;
@@ -37,6 +38,7 @@ export class MoviesStore {
                 params: { page, limit: 50, ...this.filters },
             });
             runInAction(() => {
+                console.log(data);
                 this.page = data.page;
                 this.pages = data.pages;
                 this.movies = page === 1 ? data.docs : [...this.movies, ...data.docs];
