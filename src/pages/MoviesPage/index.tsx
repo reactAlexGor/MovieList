@@ -83,7 +83,7 @@ const MoviesPage = observer(() => {
                 <Backdrop
                     open={ms.isLoading}
                     sx={{
-                        position: "absolute",
+                        position: "fixed",
                         zIndex: 1,
                         color: "#fff",
                         bgcolor: "#0077ff44",
