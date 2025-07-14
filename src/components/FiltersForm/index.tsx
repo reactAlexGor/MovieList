@@ -17,7 +17,7 @@ const FiltersForm: React.FC<Props> = ({ filters, onApply }) => {
     const isChanged = JSON.stringify(draft) !== JSON.stringify(filters);
 
     return (
-        <Box display="flex" flexDirection="column" gap={2} sx={{ maxWidth: 360 }} paddingBottom="40px">
+        <Box display="flex" flexDirection="column" gap={2} sx={{ maxWidth: 360 }}>
             <Typography variant="h6">Фильтры</Typography>
 
             <Autocomplete

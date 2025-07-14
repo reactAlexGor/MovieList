@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { useEffect, useMemo } from "react";
-import { Grid, Typography, CircularProgress, Box } from "@mui/material";
+import { Grid, Typography, CircularProgress, Box, Button } from "@mui/material";
 
 import MovieCard from "@/components/MovieCard";
 import FiltersForm from "@/components/FiltersForm";
@@ -61,6 +61,16 @@ const MoviesPage = observer(() => {
     return (
         <Box p={4}>
             <FiltersForm filters={filters} onApply={handleApply} />
+
+            <Button
+                variant="contained"
+                color="primary"
+                component={Link}
+                to="/favorites"
+                sx={{ mt: 2, mb: 2, width: "360px" }}
+            >
+                Избранные фильмы
+            </Button>
 
             <Grid container spacing={2}>
                 {ms.movies.map((movie) => (
