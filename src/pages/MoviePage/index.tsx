@@ -1,13 +1,10 @@
-// src/pages/MoviePage.tsx
 import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { Box, Typography, CircularProgress, Chip, CardMedia, Button } from "@mui/material";
-
 import StarRateIcon from "@material-ui/icons/StarRate";
 
 import { useStores } from "@/store";
-
 import noPosterImg from "@/assets/img/no-poster.png";
 
 const MoviePage = observer(() => {

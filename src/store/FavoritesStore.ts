@@ -1,8 +1,5 @@
 import { makeAutoObservable, reaction } from "mobx";
 import type { MovieShort } from "@/api/types";
-
-const STORAGE_KEY = "favoriteMovies";
-
 export class FavoritesStore {
     // Map<id, MovieShort> для быстрого has(id)
     items = new Map<number, MovieShort>();
@@ -28,7 +25,7 @@ export class FavoritesStore {
         return this.items.has(id);
     }
 
-    // вызывается после подтверждения модалки
+    // Вызывается после подтверждения модалки
     add(movie: MovieShort) {
         this.items.set(movie.id, movie);
     }
@@ -37,3 +34,5 @@ export class FavoritesStore {
         this.items.delete(id);
     }
 }
+
+const STORAGE_KEY = "favoriteMovies";

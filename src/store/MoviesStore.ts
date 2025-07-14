@@ -19,8 +19,7 @@ export class MoviesStore {
     // Сброс и загрузка первой страницы
     async fetchFirstPage(filters: Filters) {
         this.page = 1;
-        this.movies = [];
-        await this.fetchPage(1, filters);
+        await this.fetchPage(1, filters, true);
     }
 
     // Подгрузка следующей страницы (для бесконечного скролла)
@@ -30,7 +29,7 @@ export class MoviesStore {
     }
 
     // Загрузка страницы
-    async fetchPage(page: number, filters: Filters) {
+    async fetchPage(page: number, filters: Filters, replace: boolean = false) {
         this.isLoading = true;
         this.error = null;
 
@@ -39,12 +38,10 @@ export class MoviesStore {
                 page,
                 limit: 50,
                 ...(filters.genres.length && { "genres.name": filters.genres }),
-                // рейтинu от 0 до 10
+                // Рейтинu от 0 до 10
                 "rating.kp": `${filters.rating[0]}-${filters.rating[1]}`,
                 year: `${filters.year[0]}-${filters.year[1]}`,
             };
-
-            console.log("filters", filters);
 
             const { data } = await kpApi.get<MoviesResponse>("movie", {
                 params,
@@ -55,7 +52,7 @@ export class MoviesStore {
                 console.log(data);
                 this.page = data.page;
                 this.pages = data.pages;
-                this.movies = page === 1 ? data.docs : [...this.movies, ...data.docs];
+                this.movies = replace ? data.docs : [...this.movies, ...data.docs];
             });
         } catch (e) {
             runInAction(() => {

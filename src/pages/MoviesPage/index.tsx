@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useSearchParams, Link } from "react-router-dom";
 import { useEffect, useMemo } from "react";
-import { Grid, Typography, CircularProgress, Box, Button } from "@mui/material";
+import { Grid, Typography, CircularProgress, Box, Button, Backdrop } from "@mui/material";
 
 import MovieCard from "@/components/MovieCard";
 import FiltersForm from "@/components/FiltersForm";
@@ -18,7 +18,7 @@ const MoviesPage = observer(() => {
     // Преобразуем параметры URL в фильтры
     const filters: Filters = useMemo(
         () => paramsToFilters(searchParams),
-        [searchParams.toString()], // ⬅️ строка меняется только когда URL реально меняется
+        [searchParams.toString()], // строка меняется только когда URL реально меняется
     );
 
     // Первый запрос для загрузки фильмов
@@ -59,7 +59,7 @@ const MoviesPage = observer(() => {
     }
 
     return (
-        <Box p={4}>
+        <Box p={4} position="relative">
             <FiltersForm filters={filters} onApply={handleApply} />
 
             <Button
@@ -71,7 +71,6 @@ const MoviesPage = observer(() => {
             >
                 Избранные фильмы
             </Button>
-
             <Grid container spacing={2}>
                 {ms.movies.map((movie) => (
                     <Grid item key={movie.id}>
@@ -81,9 +80,25 @@ const MoviesPage = observer(() => {
             </Grid>
 
             {ms.isLoading && (
-                <Box mt={4} textAlign="center">
-                    <CircularProgress />
-                </Box>
+                <Backdrop
+                    open={ms.isLoading}
+                    sx={{
+                        position: "absolute",
+                        zIndex: 1,
+                        color: "#fff",
+                        bgcolor: "#0077ff44",
+                    }}
+                >
+                    <CircularProgress
+                        color="inherit"
+                        sx={{
+                            position: "fixed",
+                            left: "50%",
+                            top: "50%",
+                            transform: "translate(-50%, -50%)",
+                        }}
+                    />
+                </Backdrop>
             )}
             <div ref={sentinelRef} style={{ height: "1px" }} />
         </Box>
