@@ -3,9 +3,9 @@ import type { MoviesResponse } from "./types";
 
 export interface MovieFilters {
     page?: number;
-    limit?: number; // по ТЗ — 50
-    year?: string; // например, "1990-2000"
-    rating?: string; // "6-10"
+    limit?: number; // 50
+    year?: [number, number]; // 1990-2000"
+    rating?: [number, number]; // 6-10
     genres?: string[]; // ["драма","комедия"]
 }
 

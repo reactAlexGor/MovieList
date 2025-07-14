@@ -1,7 +1,9 @@
+import qs from "qs";
 import { makeAutoObservable, runInAction } from "mobx";
+
 import { kpApi } from "../api/client";
 import { MovieShort, MoviesResponse } from "@/api/types";
-import { MovieFilters } from "@/api/movies";
+import { Filters } from "@/types/filters";
 
 export class MoviesStore {
     movies: MovieShort[] = [];
@@ -9,34 +11,46 @@ export class MoviesStore {
     pages = 1;
     isLoading = false;
     error: string | null = null;
-    filters: MovieFilters = {};
 
     constructor() {
         makeAutoObservable(this);
     }
 
     // Сброс и загрузка первой страницы
-    async fetchFirstPage(filters: MovieFilters = {}) {
-        this.filters = filters;
+    async fetchFirstPage(filters: Filters) {
         this.page = 1;
         this.movies = [];
-        await this.fetchPage(1);
+        await this.fetchPage(1, filters);
     }
 
     // Подгрузка следующей страницы (для бесконечного скролла)
-    async fetchNextPage() {
+    async fetchNextPage(filters: Filters) {
         if (this.isLoading || this.page >= this.pages) return;
-        await this.fetchPage(this.page + 1);
+        await this.fetchPage(this.page + 1, filters);
     }
 
     // Загрузка страницы
-    async fetchPage(page: number) {
+    async fetchPage(page: number, filters: Filters) {
         this.isLoading = true;
         this.error = null;
+
         try {
-            const { data } = await kpApi.get<MoviesResponse>("/movie", {
-                params: { page, limit: 50, ...this.filters },
+            const params: Record<string, unknown> = {
+                page,
+                limit: 50,
+                ...(filters.genres.length && { "genres.name": filters.genres }),
+                // рейтинu от 0 до 10
+                "rating.kp": `${filters.rating[0]}-${filters.rating[1]}`,
+                year: `${filters.year[0]}-${filters.year[1]}`,
+            };
+
+            console.log("filters", filters);
+
+            const { data } = await kpApi.get<MoviesResponse>("movie", {
+                params,
+                paramsSerializer: (params) => qs.stringify(params, { arrayFormat: "repeat" }),
             });
+
             runInAction(() => {
                 console.log(data);
                 this.page = data.page;
